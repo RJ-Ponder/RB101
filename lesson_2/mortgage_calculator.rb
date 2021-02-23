@@ -62,9 +62,9 @@ loop do # main loop
   monthly_payment_formatted = format_numbers(monthly_payment)
   loan_amount_formatted = format_numbers(loan_amount)
 
-  prompt("You need to pay $#{monthly_payment_formatted}
-        per month to pay off your $#{loan_amount_formatted}
-        loan in #{loan_term} months at an APR of #{interest_rate}%.")
+  prompt("You need to pay $#{monthly_payment_formatted} per month
+         to pay off your $#{loan_amount_formatted} loan
+         in #{loan_term} months at an APR of #{interest_rate}%.")
 
   prompt("Would you like to calculate another mortgage? (Y to calculate again)")
   answer = gets.chomp.downcase
