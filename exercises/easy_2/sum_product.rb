@@ -27,28 +27,50 @@ Algorithm
   Display results.
 =end
 
-puts "Please enter an integer greater than 0:"
-integer = gets.chomp.to_i
-#validate_number
-
-puts "Enter 's' to compute the sum, 'p' to compute the product."
-operation = gets.chomp
-#validate_operation
-
-range = (1..integer)
-count = 1
-product = integer
-if operation == 's'
-  sum = range.to_a.sum
-  puts "The sum of the integers between 1 and #{integer} is #{sum}."
-elsif operation == 'p'
-  while count < integer
-    product = product * (integer - count)
-    count += 1
-  end
-  puts "The product of the integers between 1 and #{integer} is #{product}."
-else
-  puts "Please select a valid operation."
+def prompt(message)
+  puts "=> #{message}"
 end
-# above works, but no validation and there are simpler ways to do this. Use enumerable #inject (#reduce)
+
+def valid_number(number)
+  if number.to_i <= 0
+    false
+  elsif number.to_f != number.to_i
+    false
+  else
+    true
+  end
+end
+
+integer = 1
+
+loop do
+  prompt("Please enter an integer greater than 0:")
+
+  integer = gets.chomp
+
+  break if valid_number(integer)
+
+  prompt("Please enter a valid number.")
+end
+
+range = (1..integer.to_i)
+
+loop do
+  prompt("Enter 's' to compute the sum, 'p' to compute the product.")
+  
+  operation = gets.chomp.downcase
+  
+  if operation == 's'
+    sum = range.to_a.sum
+    prompt("The sum of the integers between 1 and #{integer} is #{sum}.")
+    break
+  elsif operation == 'p'
+    product = range.reduce(:*)
+    prompt("The product of the integers between 1 and #{integer} is #{product}.")
+    break
+  else
+    prompt("Please select a valid operation.")
+  end
+end
+# originally I used while and a counter to get the product, but the reduce, inject Enumerable method is simpler.
 # could also use up_to and a block like the book solution.

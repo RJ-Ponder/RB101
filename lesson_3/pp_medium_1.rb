@@ -100,4 +100,6 @@ end
 mess_with_demographics(munsters)
 p munsters
 # Question 8
+# worked on paper, basically simplifying the expression.
 # Question 9
+# Just worked it out in my head. 
