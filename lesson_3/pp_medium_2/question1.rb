@@ -1,5 +1,3 @@
-# COME BACK TO QUESTION 1 AND 2 TO STUDY
-
 def fun_with_ids
   a_outer = 42
   b_outer = "forty two"
