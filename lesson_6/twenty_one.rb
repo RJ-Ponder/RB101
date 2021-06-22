@@ -1,12 +1,30 @@
-BUST_NUMBER = 21
+# Constant definitions
+BUST_LIMIT = 21
 DEALER_GOAL = 17
-WIN_SCORE = 5
+WINNING_SCORE = 5
 
 DIAMOND = "\u2666"
 CLUB = "\u2663"
 HEART = "\u2665"
 SPADE = "\u2660"
 
+INITIALIZED_DECK = %W(
+  2#{DIAMOND} 2#{CLUB} 2#{HEART} 2#{SPADE}
+  3#{DIAMOND} 3#{CLUB} 3#{HEART} 3#{SPADE}
+  4#{DIAMOND} 4#{CLUB} 4#{HEART} 4#{SPADE}
+  5#{DIAMOND} 5#{CLUB} 5#{HEART} 5#{SPADE}
+  6#{DIAMOND} 6#{CLUB} 6#{HEART} 6#{SPADE}
+  7#{DIAMOND} 7#{CLUB} 7#{HEART} 7#{SPADE}
+  8#{DIAMOND} 8#{CLUB} 8#{HEART} 8#{SPADE}
+  9#{DIAMOND} 9#{CLUB} 9#{HEART} 9#{SPADE}
+  10#{DIAMOND} 10#{CLUB} 10#{HEART} 10#{SPADE}
+  J#{DIAMOND} J#{CLUB} J#{HEART} J#{SPADE}
+  Q#{DIAMOND} Q#{CLUB} Q#{HEART} Q#{SPADE}
+  K#{DIAMOND} K#{CLUB} K#{HEART} K#{SPADE}
+  A#{DIAMOND} A#{CLUB} A#{HEART} A#{SPADE}
+)
+
+# Method definitions
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -39,7 +57,7 @@ end
 def display(dealer_hand, player_hand, hidden = false)
   sleep(1)
   system 'clear'
-  puts 'Dealer'
+  puts 'Dealer hand:'
   if hidden
     puts "+-+ " + format_ends(dealer_hand, hidden)
     puts "|?| " + format_middle(dealer_hand, hidden)
@@ -50,7 +68,7 @@ def display(dealer_hand, player_hand, hidden = false)
     puts format_ends(dealer_hand)
   end
 
-  puts 'You'
+  puts 'Your hand:'
   puts format_ends(player_hand)
   puts format_middle(player_hand) + " (Total: #{total(player_hand)})"
   puts format_ends(player_hand)
@@ -68,7 +86,7 @@ def total(hand)
   total = nil
   loop do
     total = no_aces_total + (number_of_aces - aces_as_one) * 11 + aces_as_one
-    break if total <= BUST_NUMBER || aces_as_one >= number_of_aces
+    break if total <= BUST_LIMIT || aces_as_one >= number_of_aces
     aces_as_one += 1
   end
 
@@ -76,7 +94,7 @@ def total(hand)
 end
 
 def busted?(hand)
-  total(hand) > BUST_NUMBER
+  total(hand) > BUST_LIMIT
 end
 
 def determine_winner(player_hand, dealer_hand)
@@ -93,7 +111,7 @@ def determine_winner(player_hand, dealer_hand)
   end
 end
 
-def display_result(player_hand, dealer_hand)
+def display_round_result(player_hand, dealer_hand)
   if determine_winner(player_hand, dealer_hand) == 'Player'
     prompt "You won the hand!"
   elsif determine_winner(player_hand, dealer_hand) == 'Dealer'
@@ -103,34 +121,24 @@ def display_result(player_hand, dealer_hand)
   end
 end
 
+# Welcome screen
 system 'clear'
-prompt "Welcome to Blackjack! Try to win #{WIN_SCORE} hands before the dealer."
+prompt "Welcome to Blackjack!"
+prompt "Try to win #{WINNING_SCORE} hands before the dealer."
 sleep(2)
 
+# Main game loop
 loop do
-  prompt "Dealing first hand..."
-  sleep(1.5)
-
   dealer_score = 0
   player_score = 0
   pushes = 0
 
+  prompt "Dealing first hand..."
+  sleep(1.5)
+
   loop do
-    ordered_deck = %W(
-      2#{DIAMOND} 2#{CLUB} 2#{HEART} 2#{SPADE}
-      3#{DIAMOND} 3#{CLUB} 3#{HEART} 3#{SPADE}
-      4#{DIAMOND} 4#{CLUB} 4#{HEART} 4#{SPADE}
-      5#{DIAMOND} 5#{CLUB} 5#{HEART} 5#{SPADE}
-      6#{DIAMOND} 6#{CLUB} 6#{HEART} 6#{SPADE}
-      7#{DIAMOND} 7#{CLUB} 7#{HEART} 7#{SPADE}
-      8#{DIAMOND} 8#{CLUB} 8#{HEART} 8#{SPADE}
-      9#{DIAMOND} 9#{CLUB} 9#{HEART} 9#{SPADE}
-      10#{DIAMOND} 10#{CLUB} 10#{HEART} 10#{SPADE}
-      J#{DIAMOND} J#{CLUB} J#{HEART} J#{SPADE}
-      Q#{DIAMOND} Q#{CLUB} Q#{HEART} Q#{SPADE}
-      K#{DIAMOND} K#{CLUB} K#{HEART} K#{SPADE}
-      A#{DIAMOND} A#{CLUB} A#{HEART} A#{SPADE}
-    )
+    # Prepare deck
+    ordered_deck = INITIALIZED_DECK
 
     player_hand = []
     dealer_hand = []
@@ -147,12 +155,12 @@ loop do
     player_move = nil
 
     loop do
-      puts "Hit or Stay?"
+      prompt "Hit or Stay?"
       player_move = gets.chomp
 
       if player_move.downcase.start_with?('h')
         deal(deck, player_hand, 1)
-        puts 'Dealing a card...'
+        prompt 'Dealing a card...'
         display(dealer_hand, player_hand, true)
       elsif !(player_move.downcase.start_with?('s'))
         prompt "Please choose to either (h)it or (s)tay."
@@ -161,11 +169,12 @@ loop do
       break if player_move.downcase.start_with?('s') || busted?(player_hand)
     end
 
+    # Result of player turn
     sleep(1.5)
     if busted?(player_hand)
       prompt "You busted."
       display(dealer_hand, player_hand)
-      display_result(player_hand, dealer_hand)
+      display_round_result(player_hand, dealer_hand)
     else
       player_stays = true
       prompt "You chose to stay."
@@ -192,21 +201,23 @@ loop do
         break if total(dealer_hand) >= DEALER_GOAL || busted?(dealer_hand)
       end
 
+      # Result of dealer turn
       sleep(1.5)
       if busted?(dealer_hand)
         prompt "Dealer busted."
         sleep(1.5)
-        display_result(player_hand, dealer_hand)
+        display_round_result(player_hand, dealer_hand)
       else
         dealer_stays = true
         prompt "Dealer stays."
       end
 
       if player_stays && dealer_stays
-        display_result(player_hand, dealer_hand)
+        display_round_result(player_hand, dealer_hand)
       end
     end
 
+    # Score round
     if determine_winner(player_hand, dealer_hand) == 'Player'
       player_score += 1
     elsif determine_winner(player_hand, dealer_hand) == 'Dealer'
@@ -215,7 +226,7 @@ loop do
       pushes += 1
     end
 
-    break if player_score == WIN_SCORE || dealer_score == WIN_SCORE
+    break if player_score == WINNING_SCORE || dealer_score == WINNING_SCORE
 
     puts "( Won: #{player_score} | Lost: #{dealer_score} | Pushed: #{pushes} )"
     prompt "Continue with another hand? (y to continue, n to quit)"
@@ -224,9 +235,10 @@ loop do
     break unless answer_hand.downcase.start_with?('y')
   end
 
-  if player_score == WIN_SCORE
+  # Show winner of game
+  if player_score == WINNING_SCORE
     prompt "Congrats! You are the winner!"
-  elsif dealer_score == WIN_SCORE
+  elsif dealer_score == WINNING_SCORE
     prompt "Sorry. Dealer is the winner. Better luck next time."
   end
 
