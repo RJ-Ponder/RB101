@@ -55,7 +55,7 @@ end
 
 # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 def display(dealer_hand, player_hand, hidden = false)
-  sleep(1)
+  sleep(1.5)
   system 'clear'
   puts 'Dealer hand:'
   if hidden
@@ -134,7 +134,7 @@ loop do
   pushes = 0
 
   prompt "Dealing first hand..."
-  sleep(1.5)
+  sleep(0.5)
 
   loop do
     # Prepare deck
@@ -173,6 +173,8 @@ loop do
     sleep(1.5)
     if busted?(player_hand)
       prompt "You busted."
+      sleep(1)
+      prompt "Revealing dealer card..."
       display(dealer_hand, player_hand)
       display_round_result(player_hand, dealer_hand)
     else
@@ -188,7 +190,7 @@ loop do
       loop do
         if total(dealer_hand) < DEALER_GOAL
           deal(deck, dealer_hand, 1)
-          prompt 'Dealing a card.'
+          prompt 'Dealer hits.'
           sleep(0.5)
           prompt '.'
           sleep(0.5)
@@ -228,8 +230,11 @@ loop do
 
     break if player_score == WINNING_SCORE || dealer_score == WINNING_SCORE
 
-    puts "( Won: #{player_score} | Lost: #{dealer_score} | Pushed: #{pushes} )"
-    prompt "Continue with another hand? (y to continue, n to quit)"
+    puts ""
+    prompt "Score"
+    prompt "Won: #{player_score} | Lost: #{dealer_score} | Pushed: #{pushes}"
+    puts ""
+    prompt "Continue with another hand? (y or n)"
     answer_hand = gets.chomp
 
     break unless answer_hand.downcase.start_with?('y')
@@ -242,7 +247,7 @@ loop do
     prompt "Sorry. Dealer is the winner. Better luck next time."
   end
 
-  prompt "Start another round? (y or n)"
+  prompt "Start a new game? (y or n)"
   answer_game = gets.chomp
 
   break unless answer_game.downcase.start_with?('y')
