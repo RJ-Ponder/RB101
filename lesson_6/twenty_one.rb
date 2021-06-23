@@ -134,8 +134,8 @@ end
 def show(score)
   puts ""
   prompt "Score"
-  prompt "Won: #{score[:player]} | Lost: #{score[:dealer]} | \
-  Pushed: #{score[:push]}"
+  prompt "Won: #{score[:player]} | Lost: #{score[:dealer]} |"\
+  " Pushed: #{score[:push]}"
   puts ""
 end
 
