@@ -121,6 +121,32 @@ def display_round_result(player_hand, dealer_hand)
   end
 end
 
+def update(score, player_hand, dealer_hand)
+  if determine_winner(player_hand, dealer_hand) == 'Player'
+    score[:player] += 1
+  elsif determine_winner(player_hand, dealer_hand) == 'Dealer'
+    score[:dealer] += 1
+  else
+    score[:push] += 1
+  end
+end
+
+def show(score)
+  puts ""
+  prompt "Score"
+  prompt "Won: #{score[:player]} | Lost: #{score[:dealer]} | \
+  Pushed: #{score[:push]}"
+  puts ""
+end
+
+def display_winner(score)
+  if score[:player] == WINNING_SCORE
+    prompt "Congrats! You are the winner!"
+  elsif score[:dealer] == WINNING_SCORE
+    prompt "Sorry. Dealer is the winner. Better luck next time."
+  end
+end
+
 # Welcome screen
 system 'clear'
 prompt "Welcome to Blackjack!"
@@ -129,9 +155,7 @@ sleep(2)
 
 # Main game loop
 loop do
-  dealer_score = 0
-  player_score = 0
-  pushes = 0
+  score = { player: 0, dealer: 0, push: 0 }
 
   prompt "Dealing first hand..."
   sleep(0.5)
@@ -220,20 +244,12 @@ loop do
     end
 
     # Score round
-    if determine_winner(player_hand, dealer_hand) == 'Player'
-      player_score += 1
-    elsif determine_winner(player_hand, dealer_hand) == 'Dealer'
-      dealer_score += 1
-    else
-      pushes += 1
-    end
+    update(score, player_hand, dealer_hand)
 
-    break if player_score == WINNING_SCORE || dealer_score == WINNING_SCORE
+    break if score[:player] == WINNING_SCORE || score[:dealer] == WINNING_SCORE
 
-    puts ""
-    prompt "Score"
-    prompt "Won: #{player_score} | Lost: #{dealer_score} | Pushed: #{pushes}"
-    puts ""
+    show(score)
+
     prompt "Continue with another hand? (y or n)"
     answer_hand = gets.chomp
 
@@ -241,11 +257,7 @@ loop do
   end
 
   # Show winner of game
-  if player_score == WINNING_SCORE
-    prompt "Congrats! You are the winner!"
-  elsif dealer_score == WINNING_SCORE
-    prompt "Sorry. Dealer is the winner. Better luck next time."
-  end
+  display_winner(score)
 
   prompt "Start a new game? (y or n)"
   answer_game = gets.chomp
