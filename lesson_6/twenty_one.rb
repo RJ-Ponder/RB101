@@ -1,4 +1,3 @@
-# Constant definitions
 BUST_LIMIT = 21
 DEALER_GOAL = 17
 WINNING_SCORE = 5
@@ -8,7 +7,7 @@ CLUB = "\u2663"
 HEART = "\u2665"
 SPADE = "\u2660"
 
-INITIALIZED_DECK = %W(
+ordered_deck = %W(
   2#{DIAMOND} 2#{CLUB} 2#{HEART} 2#{SPADE}
   3#{DIAMOND} 3#{CLUB} 3#{HEART} 3#{SPADE}
   4#{DIAMOND} 4#{CLUB} 4#{HEART} 4#{SPADE}
@@ -24,9 +23,21 @@ INITIALIZED_DECK = %W(
   A#{DIAMOND} A#{CLUB} A#{HEART} A#{SPADE}
 )
 
-# Method definitions
 def prompt(msg)
   puts "=> #{msg}"
+end
+
+def welcome_and_rules
+  system 'clear'
+  prompt "Welcome to #{BUST_LIMIT}!"
+  puts ""
+  prompt "Try to win #{WINNING_SCORE} hands before the dealer."
+  puts ""
+  prompt "Win the hand by scoring higher than the dealer without going over"\
+  " #{BUST_LIMIT}."
+  puts ""
+  prompt 'Press enter to continue.'
+  STDIN.gets
 end
 
 def shuffle!(cards)
@@ -64,7 +75,7 @@ def display(dealer_hand, player_hand, hidden = false)
     puts "+-+ " + format_ends(dealer_hand, hidden)
   else
     puts format_ends(dealer_hand)
-    puts format_middle(dealer_hand)
+    puts format_middle(dealer_hand) + " (Total: #{total(dealer_hand)})"
     puts format_ends(dealer_hand)
   end
 
@@ -147,13 +158,8 @@ def display_winner(score)
   end
 end
 
-# Welcome screen
-system 'clear'
-prompt "Welcome to Blackjack!"
-prompt "Try to win #{WINNING_SCORE} hands before the dealer."
-sleep(2)
+welcome_and_rules
 
-# Main game loop
 loop do
   score = { player: 0, dealer: 0, push: 0 }
 
@@ -161,39 +167,32 @@ loop do
   sleep(0.5)
 
   loop do
-    # Prepare deck
-    ordered_deck = INITIALIZED_DECK
-
     player_hand = []
     dealer_hand = []
 
-    # Shuffle deck
     deck = shuffle!(ordered_deck)
 
-    # Deal and display cards
     deal(deck, player_hand, 2)
     deal(deck, dealer_hand, 2)
     display(dealer_hand, player_hand, true)
 
-    # Player turn
     player_move = nil
 
     loop do
       prompt "Hit or Stay?"
-      player_move = gets.chomp
+      player_move = gets.chomp.downcase.strip
 
-      if player_move.downcase.start_with?('h')
+      if ['hit', 'h'].include?(player_move)
         deal(deck, player_hand, 1)
         prompt 'Dealing a card...'
         display(dealer_hand, player_hand, true)
-      elsif !(player_move.downcase.start_with?('s'))
+      elsif !(['stay', 's'].include?(player_move))
         prompt "Please choose to either (h)it or (s)tay."
       end
 
-      break if player_move.downcase.start_with?('s') || busted?(player_hand)
+      break if ['stay', 's'].include?(player_move) || busted?(player_hand)
     end
 
-    # Result of player turn
     sleep(1.5)
     if busted?(player_hand)
       prompt "You busted."
@@ -206,7 +205,6 @@ loop do
       prompt "You chose to stay."
     end
 
-    # Dealer turn
     if player_stays
       prompt "Revealing dealer card..."
       display(dealer_hand, player_hand)
@@ -227,7 +225,6 @@ loop do
         break if total(dealer_hand) >= DEALER_GOAL || busted?(dealer_hand)
       end
 
-      # Result of dealer turn
       sleep(1.5)
       if busted?(dealer_hand)
         prompt "Dealer busted."
@@ -243,27 +240,43 @@ loop do
       end
     end
 
-    # Score round
     update(score, player_hand, dealer_hand)
 
     break if score[:player] == WINNING_SCORE || score[:dealer] == WINNING_SCORE
 
     show(score)
 
-    prompt "Continue with another hand? (y or n)"
-    answer_hand = gets.chomp
+    answer_hand = nil
+    loop do
+      prompt "Continue with another hand? (y or n)"
+      answer_hand = gets.chomp.downcase.strip
 
-    break unless answer_hand.downcase.start_with?('y')
+      if !(['yes', 'y', 'no', 'n'].include?(answer_hand))
+        prompt "Please choose either (y)es or (n)o."
+      else
+        break
+      end
+    end
+
+    break if ['no', 'n'].include?(answer_hand)
   end
 
-  # Show winner of game
   display_winner(score)
 
-  prompt "Start a new game? (y or n)"
-  answer_game = gets.chomp
+  answer_game = nil
+  loop do
+    prompt "Start a new game? (y or n)"
+    answer_game = gets.chomp.downcase.strip
 
-  break unless answer_game.downcase.start_with?('y')
+    if !(['yes', 'y', 'no', 'n'].include?(answer_game))
+      prompt "Please choose either (y)es or (n)o."
+    else
+      break
+    end
+  end
+
+  break if ['no', 'n'].include?(answer_game)
 end
 
-prompt "Thanks for playing Blackjack! Goodbye."
+prompt "Thanks for playing #{BUST_LIMIT}! Goodbye."
 sleep(1)
