@@ -83,7 +83,6 @@ def display(player_hand, dealer_hand, hidden = false)
   puts format_ends(player_hand)
   puts format_middle(player_hand) + " (Total: #{total(player_hand)})"
   puts format_ends(player_hand)
-  sleep(1)
 end
 # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
@@ -167,7 +166,10 @@ end
 
 def busted_message(player, player_hand, dealer_hand)
   prompt "#{player} busted.", 1
-  reveal_dealer_card(player_hand, dealer_hand) if player == "You"
+  if player == "You"
+    reveal_dealer_card(player_hand, dealer_hand)
+    prompt "#{player} busted."
+  end
   display_round_result(player_hand, dealer_hand)
 end
 
@@ -255,7 +257,9 @@ loop do
     player_hand = []
     dealer_hand = []
 
-    deck = shuffle!(ordered_deck)
+    deck = ordered_deck.dup
+
+    shuffle!(deck)
 
     deal!(deck, player_hand, 2)
     deal!(deck, dealer_hand, 2)
