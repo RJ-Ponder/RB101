@@ -1,0 +1,30 @@
+
+[1mFrom:[0m /home/ec2-user/rb109/arithmetic.rb:15 Object#solve:
+
+     [1;34m2[0m: [32mdef[0m [1;34msolve[0m(arr)
+     [1;34m3[0m:   index_1 = [1;34m0[0m
+     [1;34m4[0m:   index_2 = [1;34m1[0m
+     [1;34m5[0m:   index_3 = [1;34m2[0m
+     [1;34m6[0m:   count = [1;34m0[0m
+     [1;34m7[0m:   loop [32mdo[0m
+     [1;34m8[0m:     test_array = []
+     [1;34m9[0m:     test_array[[1;34m0[0m] = arr[index_1]
+    [1;34m10[0m:     loop [32mdo[0m
+    [1;34m11[0m:       test_array[[1;34m1[0m] = arr[index_2]
+    [1;34m12[0m:       loop [32mdo[0m
+    [1;34m13[0m:         test_array[[1;34m2[0m] = arr[index_3]
+    [1;34m14[0m:         binding.pry
+ => [1;34m15[0m:         count += [1;34m1[0m [32mif[0m test_array[[1;34m2[0m] - test_array[[1;34m1[0m] == test_array[[1;34m1[0m] - test_array[[1;34m0[0m]
+    [1;34m16[0m:         index_3 += [1;34m1[0m
+    [1;34m17[0m:         [32mbreak[0m [32mif[0m index_3 == arr.length - [1;34m1[0m
+    [1;34m18[0m:       [32mend[0m
+    [1;34m19[0m:       index_2 += [1;34m1[0m
+    [1;34m20[0m:       index_3 = index_2 + [1;34m1[0m
+    [1;34m21[0m:       [32mbreak[0m [32mif[0m index_2 == arr.length - [1;34m2[0m
+    [1;34m22[0m:     [32mend[0m
+    [1;34m23[0m:     index_1 += [1;34m1[0m
+    [1;34m24[0m:     index_2 = index_1 + [1;34m1[0m
+    [1;34m25[0m:     [32mbreak[0m [32mif[0m index_3 == arr.length - [1;34m3[0m
+    [1;34m26[0m:   [32mend[0m
+    [1;34m27[0m: [32mend[0m
+
