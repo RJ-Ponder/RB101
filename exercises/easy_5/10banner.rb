@@ -132,8 +132,8 @@ def print_in_box_wrap(string)
 end
 
 # print_in_box_wrap("+++ Now I am testing the wrapping to see if this works. This is really cool if it does! This is probably my favorite method I created so far +++")
-# print_in_box_wrap("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789")
+print_in_box_wrap("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789")
 # print_in_box_wrap("Now this is a story all about how / My life got flipped turned upside down / And I'd like to take a minute, just sit right there / I'll tell you how I became the prince of a town called Bel-Air")
 
 print_in_box_wrap("This is a test of the bannerizer")
-print_in_box_wrap("Now this is a really long one to see how it wraps around and still displays correctly in the box")
+print_in_box_wrap("Now this is a really long one to see how well it wraps around and still displays correctly in the box")

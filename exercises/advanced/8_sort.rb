@@ -81,5 +81,5 @@ p merge_sort([7, 3, 9, 15, 23, 1, 6, 51, 22, 37, 54, 43, 5, 25, 35, 18, 46]) #==
 =begin
 Further Exploration
 Every recursive algorithm can be reworked as a non-recursive algorithm. Can you write a method that performs a non-recursive merge sort?
-This was how I was trying to think about it at first, but couldn't wrap my head around it.
 =end
+
